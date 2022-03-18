@@ -17,5 +17,14 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    
+    QMenu* fileMenu;
+    QMenu* helpMenu;
+
+    QAction* openAct;
+    QAction* newAct;
+    
+private slots:
+
 };
 #endif // MAINWINDOW_H
