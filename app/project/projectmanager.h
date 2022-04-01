@@ -17,21 +17,19 @@ public:
 
     ProjectManager();
 
-    bool loadProject(QString const& projFilePath);
+    void loadProject(QString const& projFilePath);
 
-    bool createProject(QString const& projFilePath);
+    void createProject(QString const &projPath, const QString &projName);
 
     void recompileProject();
 
-    QStandardItemModel* getProjModel(QMainWindow *mainWindow) const;
+    QStandardItemModel* getProjModel(QMainWindow *mainWindow);
 
 private:
 
+    QJsonDocument loadFile();
+
     ProjectCompiler* m_compiler = nullptr;
 
-    QString m_projFilePath;
-
     QFile m_projFile;
-
-    QJsonDocument m_projDoc;
 };

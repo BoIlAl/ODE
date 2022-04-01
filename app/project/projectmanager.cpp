@@ -1,33 +1,29 @@
 #include "projectmanager.h"
 
+
+
+
 ProjectManager::ProjectManager(){}
 
-bool ProjectManager::loadProject(QString const& projFilePath)
+void ProjectManager::loadProject(QString const& projFilePath)
 {
     m_projFile.setFileName(projFilePath);
     if (!m_projFile.exists())
-        return false;
+        return;
 
-    m_projFilePath = projFilePath;
-    m_compiler = new ProjectCompiler(QFileInfo(m_projFilePath).path());
-
-    m_projFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString file_text = m_projFile.readAll();
-    m_projFile.close();
-
-    m_projDoc = QJsonDocument::fromJson(file_text.toUtf8());
-    if (!m_projDoc.isObject())
-        return false;
-    return true;
+    delete m_compiler; // some shit
+    m_compiler = new ProjectCompiler(QFileInfo(projFilePath).path());
 }
 
-QStandardItemModel* ProjectManager::getProjModel(QMainWindow *mainWindow) const
+QStandardItemModel* ProjectManager::getProjModel(QMainWindow *mainWindow)
 {
     auto treeModel = new QStandardItemModel(mainWindow);
-    if (!m_projDoc.isObject())
+    auto projDoc = loadFile();
+
+    if (!projDoc.isObject())
         return treeModel;
     
-    QJsonObject mainObj = m_projDoc.object();
+    QJsonObject mainObj = projDoc.object();
 
     QStandardItem* rootNode = treeModel->invisibleRootItem();
 
@@ -56,4 +52,30 @@ QStandardItemModel* ProjectManager::getProjModel(QMainWindow *mainWindow) const
 
 void ProjectManager::recompileProject() {
     m_compiler->compile();
+}
+
+QJsonDocument ProjectManager::loadFile()
+{
+    m_projFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString file_text = m_projFile.readAll();
+    m_projFile.close();
+
+    auto projDoc = QJsonDocument::fromJson(file_text.toUtf8());
+    return projDoc;
+}
+
+void ProjectManager::createProject(QString const &projPath, const QString &projName)
+{
+    QDir rootDir(projPath);
+    rootDir.mkdir(projName);
+    rootDir.mkpath(projName + "/.gldata");
+    rootDir.mkpath(projName + "/src");
+    rootDir.mkpath(projName + "/log");
+
+    QString projFileName = projPath + "/" + projName + "/" + projName + ".json";
+    m_projFile.setFileName(projFileName);
+    m_projFile.open(QIODevice::WriteOnly);
+    m_projFile.close();
+
+    loadProject(projFileName);
 }

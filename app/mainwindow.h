@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QInputDialog>
 
 #include "ui_mainwindow.h"
 #include "project/projectmanager.h"
@@ -29,6 +30,8 @@ private:
 
     void loadProject(QString const& projPath);
 
+
+
     Ui::MainWindow *ui;
 
     /* menu section */
@@ -40,15 +43,13 @@ private:
     /* project maneger */
     ProjectManager m_projManager;
 
-    QString lastPath;
-
 private Q_SLOTS:
 
-    void openGadfly();
+    void s_openGadfly();
 
-    void openProj();
+    void s_openProj();
 
-    void newProj();
+    void s_newProj();
 
-    void compileButton();
+    void s_compileButton();
 };

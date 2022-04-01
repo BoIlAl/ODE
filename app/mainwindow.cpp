@@ -3,7 +3,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    QObject::connect(ui->compileButton, &QPushButton::released, this, &MainWindow::compileButton);
+    QObject::connect(ui->s_compileButton, &QPushButton::released, this, &MainWindow::s_compileButton);
 
     createActions();
     createMenus();
@@ -17,13 +17,13 @@ MainWindow::~MainWindow()
 void MainWindow::createActions()
 {
     openGadflyAct = new QAction(tr("&Open Gadfly"), this);
-    QObject::connect(openGadflyAct, &QAction::triggered, this, &MainWindow::openGadfly);
+    QObject::connect(openGadflyAct, &QAction::triggered, this, &MainWindow::s_openGadfly);
 
     openProjAct = new QAction(tr("Open Project"), this);
-    QObject::connect(openProjAct, &QAction::triggered, this, &MainWindow::openProj);
+    QObject::connect(openProjAct, &QAction::triggered, this, &MainWindow::s_openProj);
 
     newProjAct = new QAction(tr("New Project"), this);
-    QObject::connect(newProjAct, &QAction::triggered, this, &MainWindow::newProj);
+    QObject::connect(newProjAct, &QAction::triggered, this, &MainWindow::s_newProj);
 }
 
 void MainWindow::createMenus()
@@ -35,33 +35,48 @@ void MainWindow::createMenus()
     fileMenu->addAction(newProjAct);
 }
 
-void MainWindow::openGadfly()
+void MainWindow::s_openGadfly()
 {
 
 }
 
-void MainWindow::openProj()
+void MainWindow::s_openProj()
 {
-    lastPath = QFileDialog::getOpenFileName(this, tr("Open Project"), QStandardPaths::standardLocations(QStandardPaths::StandardLocation::DesktopLocation)[0], tr("Project Files (*.json)"));
-    m_projManager.loadProject(lastPath);
+    auto projFIleName = QFileDialog::getOpenFileName(this, tr("Open Project"),
+                                            QStandardPaths::standardLocations(QStandardPaths::StandardLocation::DesktopLocation)[0],
+                                            tr("Project Files (*.json)"));
+    if (projFIleName == "")
+        return;
+    m_projManager.loadProject(projFIleName);
     auto treeModel = m_projManager.getProjModel(this);
     ui->treeView->setModel(treeModel);
 }
 
-void MainWindow::newProj()
+void MainWindow::s_newProj()
 {
-
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                    QStandardPaths::standardLocations(QStandardPaths::StandardLocation::DesktopLocation)[0],
+                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (dir.isEmpty())
+        return;
+    bool ok;
+    QString projName = QInputDialog::getText(this, tr("Enter project name"),
+                                         tr("Project name"), QLineEdit::Normal,
+                                         "MyProject", &ok);
+    if (!ok || projName.isEmpty())
+        return;
+    m_projManager.createProject(dir, projName);
+    ui->treeView->setModel(  m_projManager.getProjModel(this));
 }
 
-void MainWindow::compileButton()
+void MainWindow::s_compileButton()
 {
     m_projManager.recompileProject();
-    m_projManager.loadProject(lastPath);
     auto treeModel = m_projManager.getProjModel(this);
     ui->treeView->setModel(treeModel);
 }
 
 void MainWindow::loadProject(QString const& projPath)
 {
-    
+
 }

@@ -53,7 +53,8 @@ void ProjectCompiler::createMainJson(ontologyBaseVisitor& visitor) {
     jsonDoc.setObject(mainJson);
     auto json = jsonDoc.toJson();
 
-    QFile file(projectPath_ + "/project_I.json");
+    QDir dir = QDir(projectPath_);
+    QFile file(projectPath_ + "/" + dir.dirName() + ".json");
     file.open(QIODevice::WriteOnly);
     file.write(json);
     file.close();
