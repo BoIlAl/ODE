@@ -30,7 +30,6 @@ public:
 
     virtual RelType getRelType(const QString& name) const = 0;
 
-protected:
+    bool move(QGraphicsSceneMouseEvent* event);
 
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 };

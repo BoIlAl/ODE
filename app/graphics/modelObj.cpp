@@ -12,8 +12,6 @@ public:
  
     RelType getRelType(const QString& name) const override;
 
-protected:
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 class ActivityModelObj : public AbsModelObj {
@@ -71,10 +69,9 @@ ClassModelObj* ClassModelObj::parseClass(const QJsonObject & obj) {
         } 
     }
 
-    //auto text = new QGraphicsTextItem(newModelObj->name_, newModelObj);
-    //newModelObj->setRect(text->boundingRect());
-    newModelObj->setRect(-200, -240, 200, 200);
-    newModelObj->setPos(-200, -240);
+    auto text = new QGraphicsTextItem(newModelObj->name_, newModelObj);
+    newModelObj->setRect(text->boundingRect());
+    newModelObj->setPos(0, 0);
     return newModelObj;
 }
 
@@ -168,14 +165,13 @@ AbsModelObj *AbsModelObj::createFromJson(const QJsonObject & obj)
     }
 }
 
-void AbsModelObj::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+bool AbsModelObj::move(QGraphicsSceneMouseEvent *event)
 {
-    if (event->buttons() & Qt::LeftButton)
-        setPos(event->scenePos());
-}
-
-void ClassModelObj::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-    if (event->buttons() & Qt::LeftButton)
-        setPos(event->scenePos());
-    AbsModelObj::mouseMoveEvent(event);
+    if (rect().contains(event->lastScenePos()-pos())){
+        auto d = event->scenePos() - event->lastScenePos();
+        setPos(pos() + d);
+        
+        return true;
+    }
+    return false;
 }

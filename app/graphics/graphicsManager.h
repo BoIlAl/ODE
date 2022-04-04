@@ -7,7 +7,7 @@
 
 class GraphicsManager : public QGraphicsScene {
 private:
-    //QVector<AbsModelObj*> elems_;
+    QVector<AbsModelObj*> elems_;
 
     //QGraphicsScene* scene_;
 public:
@@ -18,5 +18,5 @@ public:
     void redraw() const;
 
 protected:
-    //void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 };
