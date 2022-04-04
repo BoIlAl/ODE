@@ -1,5 +1,5 @@
 
-// Generated from c:\Users\Admin\Desktop\ODE\ontology.g4 by ANTLR 4.8
+// Generated from c:\Users\Admin\Desktop\ODE\app\grammar\ontology.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -12,7 +12,7 @@
 class  ontologyParser : public antlr4::Parser {
 public:
   enum {
-    NAME = 1, STRING = 2, NEWLINE = 3, WHITESPACE = 4, TAB = 5, FRAME = 6, 
+    NAME = 1, STRING = 2, NEWLINE = 3, WHITESPACE = 4, TAB = 5, PACKAGE = 6, 
     CLASS = 7, ENUMERATION = 8, ACTIVITY = 9, ASSOCIATION = 10, ATTRIBUTES = 11, 
     OPERATIONS = 12, AGGREGATION = 13, COMPOSITION = 14, DEPENDENCY = 15, 
     IMPLEMENTATION = 16, INPUT = 17, OUTPUT = 18, LITERALS = 19, COMMENT = 20, 
@@ -21,7 +21,7 @@ public:
   };
 
   enum {
-    RuleFile = 0, RuleFrame = 1, RuleClass_ = 2, RuleEnum_ = 3, RuleAct = 4, 
+    RuleFile = 0, RulePackage = 1, RuleClass_ = 2, RuleEnum_ = 3, RuleAct = 4, 
     RuleGen = 5, RuleAssoc = 6, RuleAttr = 7, RuleOper = 8, RuleAggr = 9, 
     RuleComp = 10, RuleDep = 11, RuleImpl = 12, RuleIn = 13, RuleOut = 14, 
     RuleEnum_literals = 15, RuleComm = 16
@@ -38,7 +38,7 @@ public:
 
 
   class FileContext;
-  class FrameContext;
+  class PackageContext;
   class Class_Context;
   class Enum_Context;
   class ActContext;
@@ -59,7 +59,7 @@ public:
   public:
     FileContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    FrameContext *frame();
+    PackageContext *package();
     antlr4::tree::TerminalNode *EOF();
 
 
@@ -69,11 +69,11 @@ public:
 
   FileContext* file();
 
-  class  FrameContext : public antlr4::ParserRuleContext {
+  class  PackageContext : public antlr4::ParserRuleContext {
   public:
-    FrameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    PackageContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *FRAME();
+    antlr4::tree::TerminalNode *PACKAGE();
     antlr4::tree::TerminalNode *NAME();
     antlr4::tree::TerminalNode *LBRACE();
     antlr4::tree::TerminalNode *RBRACE();
@@ -91,7 +91,7 @@ public:
    
   };
 
-  FrameContext* frame();
+  PackageContext* package();
 
   class  Class_Context : public antlr4::ParserRuleContext {
   public:

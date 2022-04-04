@@ -29,7 +29,7 @@ private:
 
     QJsonDocument loadFile();
 
-    ProjectCompiler* m_compiler = nullptr;
+    ProjectCompiler m_compiler;
 
     QFile m_projFile;
 };

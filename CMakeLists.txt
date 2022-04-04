@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-file(GLOB CODE_SRC "./app/*.cpp" "./app/project/*.cpp" "./app/grammar/*.cpp")
+file(GLOB CODE_SRC "./app/*.cpp" "./app/project/*.cpp" "./app/grammar/*.cpp" "./app/logger/*.cpp")
 file(GLOB UI_SRC "./ui/*.ui")
 
 qt5_wrap_ui(UI_HEADERS ${UI_SRC})
@@ -20,6 +20,7 @@ qt5_wrap_ui(UI_HEADERS ${UI_SRC})
 include_directories(
   ${PROJECT_SOURCE_DIR}/app
   ${PROJECT_SOURCE_DIR}/app/grammar
+  ${PROJECT_SOURCE_DIR}/app/logger
   ${PROJECT_SOURCE_DIR}/app/project
   ${PROJECT_SOURCE_DIR}/ui
 

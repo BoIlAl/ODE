@@ -1,5 +1,5 @@
 
-// Generated from c:\Users\Admin\Desktop\ODE\ontology.g4 by ANTLR 4.8
+// Generated from c:\Users\Admin\Desktop\ODE\app\grammar\ontology.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -12,7 +12,7 @@
 class  ontologyLexer : public antlr4::Lexer {
 public:
   enum {
-    NAME = 1, STRING = 2, NEWLINE = 3, WHITESPACE = 4, TAB = 5, FRAME = 6, 
+    NAME = 1, STRING = 2, NEWLINE = 3, WHITESPACE = 4, TAB = 5, PACKAGE = 6, 
     CLASS = 7, ENUMERATION = 8, ACTIVITY = 9, ASSOCIATION = 10, ATTRIBUTES = 11, 
     OPERATIONS = 12, AGGREGATION = 13, COMPOSITION = 14, DEPENDENCY = 15, 
     IMPLEMENTATION = 16, INPUT = 17, OUTPUT = 18, LITERALS = 19, COMMENT = 20, 

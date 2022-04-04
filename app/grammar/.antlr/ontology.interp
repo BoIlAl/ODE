@@ -5,7 +5,7 @@ null
 null
 ' '
 '\t'
-'Frame'
+'Package'
 'Class'
 'Enumeration'
 'Activity'
@@ -35,7 +35,7 @@ STRING
 NEWLINE
 WHITESPACE
 TAB
-FRAME
+PACKAGE
 CLASS
 ENUMERATION
 ACTIVITY
@@ -60,7 +60,7 @@ SEMICOLON
 
 rule names:
 file
-frame
+package
 class_
 enum_
 act

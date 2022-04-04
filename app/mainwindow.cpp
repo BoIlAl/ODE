@@ -2,8 +2,9 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->treeView->setHeaderHidden(true);
 
-    QObject::connect(ui->s_compileButton, &QPushButton::released, this, &MainWindow::s_compileButton);
+    QObject::connect(ui->compileButton, &QPushButton::released, this, &MainWindow::s_compileButton);
 
     createActions();
     createMenus();

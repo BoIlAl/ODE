@@ -1,5 +1,5 @@
 
-// Generated from c:\Users\Admin\Desktop\ODE\ontology.g4 by ANTLR 4.8
+// Generated from c:\Users\Admin\Desktop\ODE\app\grammar\ontology.g4 by ANTLR 4.8
 
 
 #include "ontologyVisitor.h"
@@ -37,8 +37,8 @@ ontologyParser::FileContext::FileContext(ParserRuleContext *parent, size_t invok
   : ParserRuleContext(parent, invokingState) {
 }
 
-ontologyParser::FrameContext* ontologyParser::FileContext::frame() {
-  return getRuleContext<ontologyParser::FrameContext>(0);
+ontologyParser::PackageContext* ontologyParser::FileContext::package() {
+  return getRuleContext<ontologyParser::PackageContext>(0);
 }
 
 tree::TerminalNode* ontologyParser::FileContext::EOF() {
@@ -68,7 +68,7 @@ ontologyParser::FileContext* ontologyParser::file() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(34);
-    frame();
+    package();
     setState(35);
     match(ontologyParser::EOF);
    
@@ -82,76 +82,76 @@ ontologyParser::FileContext* ontologyParser::file() {
   return _localctx;
 }
 
-//----------------- FrameContext ------------------------------------------------------------------
+//----------------- PackageContext ------------------------------------------------------------------
 
-ontologyParser::FrameContext::FrameContext(ParserRuleContext *parent, size_t invokingState)
+ontologyParser::PackageContext::PackageContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* ontologyParser::FrameContext::FRAME() {
-  return getToken(ontologyParser::FRAME, 0);
+tree::TerminalNode* ontologyParser::PackageContext::PACKAGE() {
+  return getToken(ontologyParser::PACKAGE, 0);
 }
 
-tree::TerminalNode* ontologyParser::FrameContext::NAME() {
+tree::TerminalNode* ontologyParser::PackageContext::NAME() {
   return getToken(ontologyParser::NAME, 0);
 }
 
-tree::TerminalNode* ontologyParser::FrameContext::LBRACE() {
+tree::TerminalNode* ontologyParser::PackageContext::LBRACE() {
   return getToken(ontologyParser::LBRACE, 0);
 }
 
-tree::TerminalNode* ontologyParser::FrameContext::RBRACE() {
+tree::TerminalNode* ontologyParser::PackageContext::RBRACE() {
   return getToken(ontologyParser::RBRACE, 0);
 }
 
-std::vector<ontologyParser::Class_Context *> ontologyParser::FrameContext::class_() {
+std::vector<ontologyParser::Class_Context *> ontologyParser::PackageContext::class_() {
   return getRuleContexts<ontologyParser::Class_Context>();
 }
 
-ontologyParser::Class_Context* ontologyParser::FrameContext::class_(size_t i) {
+ontologyParser::Class_Context* ontologyParser::PackageContext::class_(size_t i) {
   return getRuleContext<ontologyParser::Class_Context>(i);
 }
 
-std::vector<ontologyParser::ActContext *> ontologyParser::FrameContext::act() {
+std::vector<ontologyParser::ActContext *> ontologyParser::PackageContext::act() {
   return getRuleContexts<ontologyParser::ActContext>();
 }
 
-ontologyParser::ActContext* ontologyParser::FrameContext::act(size_t i) {
+ontologyParser::ActContext* ontologyParser::PackageContext::act(size_t i) {
   return getRuleContext<ontologyParser::ActContext>(i);
 }
 
-std::vector<ontologyParser::Enum_Context *> ontologyParser::FrameContext::enum_() {
+std::vector<ontologyParser::Enum_Context *> ontologyParser::PackageContext::enum_() {
   return getRuleContexts<ontologyParser::Enum_Context>();
 }
 
-ontologyParser::Enum_Context* ontologyParser::FrameContext::enum_(size_t i) {
+ontologyParser::Enum_Context* ontologyParser::PackageContext::enum_(size_t i) {
   return getRuleContext<ontologyParser::Enum_Context>(i);
 }
 
-std::vector<ontologyParser::AssocContext *> ontologyParser::FrameContext::assoc() {
+std::vector<ontologyParser::AssocContext *> ontologyParser::PackageContext::assoc() {
   return getRuleContexts<ontologyParser::AssocContext>();
 }
 
-ontologyParser::AssocContext* ontologyParser::FrameContext::assoc(size_t i) {
+ontologyParser::AssocContext* ontologyParser::PackageContext::assoc(size_t i) {
   return getRuleContext<ontologyParser::AssocContext>(i);
 }
 
 
-size_t ontologyParser::FrameContext::getRuleIndex() const {
-  return ontologyParser::RuleFrame;
+size_t ontologyParser::PackageContext::getRuleIndex() const {
+  return ontologyParser::RulePackage;
 }
 
 
-antlrcpp::Any ontologyParser::FrameContext::accept(tree::ParseTreeVisitor *visitor) {
+antlrcpp::Any ontologyParser::PackageContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<ontologyVisitor*>(visitor))
-    return parserVisitor->visitFrame(this);
+    return parserVisitor->visitPackage(this);
   else
     return visitor->visitChildren(this);
 }
 
-ontologyParser::FrameContext* ontologyParser::frame() {
-  FrameContext *_localctx = _tracker.createInstance<FrameContext>(_ctx, getState());
-  enterRule(_localctx, 2, ontologyParser::RuleFrame);
+ontologyParser::PackageContext* ontologyParser::package() {
+  PackageContext *_localctx = _tracker.createInstance<PackageContext>(_ctx, getState());
+  enterRule(_localctx, 2, ontologyParser::RulePackage);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -160,7 +160,7 @@ ontologyParser::FrameContext* ontologyParser::frame() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(37);
-    match(ontologyParser::FRAME);
+    match(ontologyParser::PACKAGE);
     setState(38);
     match(ontologyParser::NAME);
     setState(39);
@@ -1576,19 +1576,19 @@ atn::ATN ontologyParser::_atn;
 std::vector<uint16_t> ontologyParser::_serializedATN;
 
 std::vector<std::string> ontologyParser::_ruleNames = {
-  "file", "frame", "class_", "enum_", "act", "gen", "assoc", "attr", "oper", 
+  "file", "package", "class_", "enum_", "act", "gen", "assoc", "attr", "oper", 
   "aggr", "comp", "dep", "impl", "in", "out", "enum_literals", "comm"
 };
 
 std::vector<std::string> ontologyParser::_literalNames = {
-  "", "", "", "", "' '", "'\t'", "'Frame'", "'Class'", "'Enumeration'", 
+  "", "", "", "", "' '", "'\t'", "'Package'", "'Class'", "'Enumeration'", 
   "'Activity'", "'Association'", "'attributes'", "'operations'", "'aggregation'", 
   "'composition'", "'dependency'", "'implementation'", "'input'", "'output'", 
   "'literals'", "'comment'", "'('", "')'", "'{'", "'}'", "':'", "','", "';'"
 };
 
 std::vector<std::string> ontologyParser::_symbolicNames = {
-  "", "NAME", "STRING", "NEWLINE", "WHITESPACE", "TAB", "FRAME", "CLASS", 
+  "", "NAME", "STRING", "NEWLINE", "WHITESPACE", "TAB", "PACKAGE", "CLASS", 
   "ENUMERATION", "ACTIVITY", "ASSOCIATION", "ATTRIBUTES", "OPERATIONS", 
   "AGGREGATION", "COMPOSITION", "DEPENDENCY", "IMPLEMENTATION", "INPUT", 
   "OUTPUT", "LITERALS", "COMMENT", "LBRACKET", "RBRACKET", "LBRACE", "RBRACE", 

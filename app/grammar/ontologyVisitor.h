@@ -1,5 +1,5 @@
 
-// Generated from c:\Users\Admin\Desktop\ODE\ontology.g4 by ANTLR 4.8
+// Generated from c:\Users\Admin\Desktop\ODE\app\grammar\ontology.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -21,7 +21,7 @@ public:
    */
     virtual antlrcpp::Any visitFile(ontologyParser::FileContext *context) = 0;
 
-    virtual antlrcpp::Any visitFrame(ontologyParser::FrameContext *context) = 0;
+    virtual antlrcpp::Any visitPackage(ontologyParser::PackageContext *context) = 0;
 
     virtual antlrcpp::Any visitClass_(ontologyParser::Class_Context *context) = 0;
 

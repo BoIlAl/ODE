@@ -5,7 +5,7 @@ STRING              : '"' SYMS '"';
 NEWLINE             : ('\r'? '\n' | '\r')+ -> skip;
 WHITESPACE          : ' ' -> skip;
 TAB                 : '\t' -> skip;
-FRAME               : 'Frame';
+PACKAGE             : 'Package';
 CLASS               : 'Class';
 ENUMERATION         : 'Enumeration';
 ACTIVITY            : 'Activity';
@@ -30,8 +30,8 @@ SEMICOLON           : ';';
 fragment SYMS       :  .*?;                              //???                   
 
 
-file                : frame EOF;
-frame               : FRAME NAME LBRACE class_* act* enum_* assoc* RBRACE;
+file                : package EOF;
+package             : PACKAGE NAME LBRACE class_* act* enum_* assoc* RBRACE;
 class_              : CLASS NAME gen? LBRACE attr? oper? aggr? comp? dep? impl? comm? RBRACE;
 enum_               : ENUMERATION NAME LBRACE enum_literals RBRACE;
 act                 : ACTIVITY NAME gen? LBRACE in out aggr? comp? dep? impl? comm? RBRACE;

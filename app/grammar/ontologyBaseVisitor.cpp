@@ -1,48 +1,98 @@
 #include "ontologyBaseVisitor.h"
 
-ontologyBaseVisitor::ontologyBaseVisitor(CompilerLogger logger) {
-  logger_ = logger;
+ontologyBaseVisitor::ontologyBaseVisitor(Logger* logger) : logger_(logger) {}
+
+bool ontologyBaseVisitor::isUsed(const std::string& str) const {
+  int i;
+  for (i = 0; i < currUsedObjs_.size(); ++i) {
+    if (currUsedObjs_[i] == str) {
+      return true;
+    }
+  }
+  return false;
 }
 
-QJsonObject ontologyBaseVisitor::getJson(ontologyParser::FileContext *ctx){
-  return visitFile(ctx).as<QJsonObject>();
+void ontologyBaseVisitor::redefCheck() const {
+  
+  if (defClasses_.size() > 1) {
+    for (int i = 0; i < defClasses_.size() - 1; ++i) {
+      for (int j = i + 1; j < defClasses_.size(); ++j) {
+        if (defClasses_[i] == defClasses_[j]) {
+          logger_->log(CompErrorLevel::CEL_ERROR, CompErrorType::CE_REDEF, ("class " + defClasses_[i]).c_str());
+        }
+      }
+    }
+  }
+
+  if (defActivities_.size() > 1) {
+    for (int i = 0; i < defActivities_.size() - 1; ++i) {
+      for (int j = i + 1; j < defActivities_.size(); ++j) {
+        if (defActivities_[i] == defActivities_[j]) {
+          logger_->log(CompErrorLevel::CEL_ERROR, CompErrorType::CE_REDEF, ("activity " + defActivities_[i]).c_str());
+        }
+      }
+    }
+  }
+}
+
+QJsonArray ontologyBaseVisitor::createUsedArr(std::vector<std::string> used, std::vector<std::string> def) const {
+  QJsonArray usedArr;
+  for (int i = 0; i < used.size(); ++i) {
+    int j;
+    for (j = 0; j < def.size(); ++j) {
+      if (used[i] == def[j]) {
+        break;
+      }
+    }
+    if (j == def.size()) {
+      usedArr.push_back(used[i].c_str());
+    }
+  }
+  return usedArr;
+}
+
+QJsonObject ontologyBaseVisitor::getJson(ontologyParser::FileContext *ctx) {
+
+  QJsonObject json = visitFile(ctx).as<QJsonObject>();
+
+  redefCheck();
+
+  QJsonArray usedСlassesArr = createUsedArr(usedСlasses_, defClasses_);
+  if (usedСlassesArr.size() > 0) {
+    json.insert("Used Сlasses", usedСlassesArr);
+  }
+
+  QJsonArray usedActivitiesArr = createUsedArr(usedActivities_, defActivities_);
+  if (usedActivitiesArr.size() > 0) {
+    json.insert("Used Activities", usedActivitiesArr);
+  }
+
+  defClasses_.clear();
+  usedСlasses_.clear();
+
+  defActivities_.clear();
+  usedActivities_.clear();
+
+  return json;
 }
 
 antlrcpp::Any ontologyBaseVisitor::visitFile(ontologyParser::FileContext *ctx) {
-    auto frame = ctx->frame();
-    return visitFrame(frame).as<QJsonObject>();
+    return visitPackage(ctx->package()).as<QJsonObject>();
 }
 
-antlrcpp::Any ontologyBaseVisitor::visitFrame(ontologyParser::FrameContext *ctx) {
-    QJsonObject frame;
-    frameName_ = ctx->NAME()->toString();
-    frames_.push_back(frameName_);
+antlrcpp::Any ontologyBaseVisitor::visitPackage(ontologyParser::PackageContext *ctx) {
+    QJsonObject package;
 
+    std::function<antlrcpp::Any(antlr4::ParserRuleContext)> visitFunc;
+
+    currUsedObjs_ = usedСlasses_;
     if (!ctx->class_().empty()) {
       QJsonArray classes;
       auto arrClass = ctx->class_();
       for(int i = 0;  i <  arrClass.size(); ++i) {
           classes.push_back(visitClass_(arrClass[i]).as<QJsonObject>());
       }
-      frame.insert("Classes", classes);
-    }
-
-    if (!ctx->act().empty()) {
-      QJsonArray acts;
-      auto arrAct = ctx->act();
-      for(int i = 0;  i <  arrAct.size(); ++i) {
-          acts.push_back(visitAct(arrAct[i]).as<QJsonObject>());
-      }
-      frame.insert("Activity", acts);
-    }
-
-    if (!ctx->enum_().empty()) {
-      QJsonArray enums;
-      auto arrEnum = ctx->enum_();
-      for(int i = 0;  i <  arrEnum.size(); ++i) {
-          enums.push_back(visitEnum_(arrEnum[i]).as<QJsonObject>());
-      }
-      frame.insert("Enumeration", enums);
+      package.insert("Class", classes);
     }
 
     if (!ctx->assoc().empty()) {
@@ -51,11 +101,34 @@ antlrcpp::Any ontologyBaseVisitor::visitFrame(ontologyParser::FrameContext *ctx)
       for(int i = 0;  i <  arrAssoc.size(); ++i) {
           assoc.push_back(visitAssoc(arrAssoc[i]).as<QJsonObject>());
       }
-      frame.insert("Association", assoc);
+      package.insert("Association", assoc);
+    }
+    usedСlasses_ = currUsedObjs_;
+
+    currUsedObjs_ = usedActivities_;
+    if (!ctx->act().empty()) {
+      QJsonArray acts;
+      auto arrAct = ctx->act();
+      for(int i = 0;  i <  arrAct.size(); ++i) {
+          acts.push_back(visitAct(arrAct[i]).as<QJsonObject>());
+      }
+      package.insert("Activity", acts);
+    }
+    usedActivities_ = currUsedObjs_;
+
+    if (!ctx->enum_().empty()) {
+      QJsonArray enums;
+      auto arrEnum = ctx->enum_();
+      for(int i = 0;  i <  arrEnum.size(); ++i) {
+          enums.push_back(visitEnum_(arrEnum[i]).as<QJsonObject>());
+      }
+      package.insert("Enumeration", enums);
     }
 
-    frame.insert("name", ctx->NAME()->getText().c_str());
-    return frame;
+    std::string name = ctx->NAME()->getText();
+    package.insert("name", name.substr(1, name.size() - 2).c_str()); 
+
+    return package;
 }
 
 antlrcpp::Any ontologyBaseVisitor::visitClass_(ontologyParser::Class_Context *ctx) {
@@ -108,8 +181,11 @@ antlrcpp::Any ontologyBaseVisitor::visitClass_(ontologyParser::Class_Context *ct
       class_.insert("comm", visitComm(ctx->comm()).as<std::string>().c_str());
     }
 
-    classes_.push_back(std::pair<std::string, std::string>(frameName_.c_str(), ctx->NAME()->getText().c_str()));
-    class_.insert("name", ctx->NAME()->getText().c_str());
+    std::string name = ctx->NAME()->getText();
+    name = name.substr(1, name.size() - 2);
+    defClasses_.push_back(name);
+    class_.insert("name", name.c_str());    
+
     return class_;
 }
 
@@ -118,15 +194,16 @@ antlrcpp::Any ontologyBaseVisitor::visitAct(ontologyParser::ActContext *ctx) {
 
     if (ctx->gen() != nullptr) {
       QJsonArray gen;
-      std::vector<std::string> arr = visitGen(ctx->gen()).as<std::vector<std::string>>();
-      for (int i = 0; i < arr.size(); ++i) {
-        gen.push_back(arr[i].c_str());
+      std::vector<std::string> arrGen = visitGen(ctx->gen()).as<std::vector<std::string>>();
+      for (int i = 0; i < arrGen.size(); ++i) {
+        gen.push_back(arrGen[i].c_str());
       }
       act.insert("generalization", gen);
     }
 
     QJsonArray in;
     std::vector<std::string> arrIN = visitIn(ctx->in()).as<std::vector<std::string>>();
+    currUsedObjs_ = usedСlasses_;
     for (int i = 0; i < arrIN.size(); ++i) {
       in.push_back(arrIN[i].c_str());
     }
@@ -138,8 +215,9 @@ antlrcpp::Any ontologyBaseVisitor::visitAct(ontologyParser::ActContext *ctx) {
       out.push_back(arrOut[i].c_str());
     }
     act.insert("out", out);
+    usedСlasses_ = currUsedObjs_;
 
-
+    currUsedObjs_ = usedActivities_;
     if (ctx->aggr() != nullptr) {
       act.insert("aggr", visitAggr(ctx->aggr()).as<std::string>().c_str());
     }
@@ -160,8 +238,10 @@ antlrcpp::Any ontologyBaseVisitor::visitAct(ontologyParser::ActContext *ctx) {
       act.insert("comm", visitComm(ctx->comm()).as<std::string>().c_str());
     }
 
-    activities_.push_back(std::pair<std::string, std::string>(frameName_.c_str(), ctx->NAME()->getText().c_str()));
-    act.insert("name", ctx->NAME()->getText().c_str());
+    std::string name = ctx->NAME()->getText();
+    name = name.substr(1, name.size() - 2);
+    defActivities_.push_back(name);
+    act.insert("name", name.c_str());
     return act;
 }
 
@@ -176,97 +256,98 @@ antlrcpp::Any ontologyBaseVisitor::visitEnum_(ontologyParser::Enum_Context *ctx)
     }
     enumeration.insert("enum_literals", literals);
 
+    std::string name = ctx->NAME()->getText();
+    enumeration.insert("name", name.substr(1, name.size() - 2).c_str());
 
-    enums_.push_back(std::pair<std::string, std::string>(frameName_, ctx->NAME()->getText().c_str()));
-    enumeration.insert("name", ctx->NAME()->getText().c_str());
     return enumeration;
 }
 
-antlrcpp::Any ontologyBaseVisitor::visitGen(ontologyParser::GenContext *ctx) {
-    std::vector<std::string> names;
+std::vector<std::string> ontologyBaseVisitor::getNames(std::vector<antlr4::tree::TerminalNode*> arr) {
+  std::vector<std::string> names;
+  std::string name;
 
-    auto arr = ctx->NAME();
-    
+  for(int i = 0;  i < arr.size(); ++i) {
+      name = arr[i]->getText();
+      name = name.substr(1, name.size() - 2);
+      if (!isUsed(name)) {
+        currUsedObjs_.push_back(name);
+      }
+      names.push_back(name);
+  }
+  return names;
+}
+
+antlrcpp::Any ontologyBaseVisitor::visitGen(ontologyParser::GenContext *ctx) {
+  return getNames(ctx->NAME());
+}
+
+antlrcpp::Any ontologyBaseVisitor::visitIn(ontologyParser::InContext *ctx) {
+  return getNames(ctx->NAME());
+}
+
+antlrcpp::Any ontologyBaseVisitor::visitOut(ontologyParser::OutContext *ctx) {
+  return getNames(ctx->NAME());
+}
+
+std::vector<std::string> ontologyBaseVisitor::getStrs(std::vector<antlr4::tree::TerminalNode*> arr) {
+  std::vector<std::string> strs;
     for(int i = 0;  i <  arr.size(); ++i) {
-        names.push_back(arr[i]->getText());
+        std::string str = arr[i]->getText();
+        strs.push_back(str.substr(1, str.size() - 2));
     }
-    return names;
+    return strs;
+}
+
+antlrcpp::Any ontologyBaseVisitor::visitAttr(ontologyParser::AttrContext *ctx) {
+  return getStrs(ctx->STRING());
+}
+
+antlrcpp::Any ontologyBaseVisitor::visitOper(ontologyParser::OperContext *ctx) {
+  return getStrs(ctx->STRING());
+}
+
+antlrcpp::Any ontologyBaseVisitor::visitEnum_literals(ontologyParser::Enum_literalsContext *ctx) {
+  return getStrs(ctx->STRING());
+}
+
+std::string ontologyBaseVisitor::getName(antlr4::tree::TerminalNode* node) {
+  std::string name = node->getText();
+  name = name.substr(1, name.size() - 2);
+
+  if (!isUsed(name)) {
+      currUsedObjs_.push_back(name); 
+  }
+  return name;
 }
 
 antlrcpp::Any ontologyBaseVisitor::visitAssoc(ontologyParser::AssocContext *ctx) {
     QJsonObject assoc;
-    assoc.insert("name", ctx->STRING()->toString().c_str());
-    assoc.insert("left", ctx->NAME(0)->toString().c_str());
-    assoc.insert("right", ctx->NAME(1)->toString().c_str());
+
+    std::string name = ctx->STRING()->toString();
+
+    assoc.insert("name", name.substr(1, name.size() - 2).c_str());
+    assoc.insert("left", getName(ctx->NAME(0)).c_str());
+    assoc.insert("right", getName(ctx->NAME(1)).c_str());
     return assoc;
 }
 
-antlrcpp::Any ontologyBaseVisitor::visitAttr(ontologyParser::AttrContext *ctx) {
-    auto arr = ctx->STRING();
-    std::vector<std::string> strs;
-    for(int i = 0;  i <  arr.size(); ++i) {
-        strs.push_back(arr[i]->getText());
-    }
-    return strs;
-}
-
-antlrcpp::Any ontologyBaseVisitor::visitOper(ontologyParser::OperContext *ctx) {
-    auto arr = ctx->STRING();
-    std::vector<std::string> strs;
-    for(int i = 0;  i <  arr.size(); ++i) {
-        strs.push_back(arr[i]->getText());
-    }
-    return strs;
-}
-
 antlrcpp::Any ontologyBaseVisitor::visitAggr(ontologyParser::AggrContext *ctx) {
-    std::string name = ctx->NAME()->getText();
-    return name;
+  return getName(ctx->NAME());
 }
 
 antlrcpp::Any ontologyBaseVisitor::visitComp(ontologyParser::CompContext *ctx) {
-    std::string name = ctx->NAME()->getText();
-    return name;
+  return getName(ctx->NAME());
 }
 
 antlrcpp::Any ontologyBaseVisitor::visitDep(ontologyParser::DepContext *ctx) {
-    std::string name = ctx->NAME()->getText();
-    return name;
+  return getName(ctx->NAME());
 }
 
 antlrcpp::Any ontologyBaseVisitor::visitImpl(ontologyParser::ImplContext *ctx) {
-    std::string name = ctx->NAME()->getText();
-    return name;
-}
-
-antlrcpp::Any ontologyBaseVisitor::visitIn(ontologyParser::InContext *ctx) {
-    auto arr = ctx->NAME();
-    std::vector<std::string> names;
-    for(int i = 0;  i <  arr.size(); ++i) {
-        names.push_back(arr[i]->getText());
-    }
-    return names;
-}
-
-antlrcpp::Any ontologyBaseVisitor::visitOut(ontologyParser::OutContext *ctx) {
-    auto arr = ctx->NAME();
-    std::vector<std::string> names;
-    for(int i = 0;  i <  arr.size(); ++i) {
-        names.push_back(arr[i]->getText());
-    }
-    return names;
-}
-
-antlrcpp::Any ontologyBaseVisitor::visitEnum_literals(ontologyParser::Enum_literalsContext *ctx) {
-    auto arr = ctx->STRING();
-    std::vector<std::string> strs;
-    for(int i = 0;  i <  arr.size(); ++i) {
-        strs.push_back(arr[i]->getText());
-    }
-    return strs;
+  return getName(ctx->NAME());
 }
 
 antlrcpp::Any ontologyBaseVisitor::visitComm(ontologyParser::CommContext *ctx) {
     std::string str = ctx->STRING()->getText();
-    return str;
+    return str.substr(1, str.size() - 2);
 }

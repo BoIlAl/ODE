@@ -2,35 +2,41 @@
 
 #include "antlr4-runtime.h"
 #include "ontologyVisitor.h"
-#include "compilerLogger.h"
+#include "logger.h"
 #include <QJsonObject>
 #include <QJsonArray>
 
 class  ontologyBaseVisitor : public ontologyVisitor {
 public:
 
-  ontologyBaseVisitor(CompilerLogger logger);
+  ontologyBaseVisitor(Logger* logger);
 
   QJsonObject getJson(ontologyParser::FileContext *ctx);
 
-  std::vector<std::pair<std::string, std::string>> getClasses() {return classes_;};
-  std::vector<std::pair<std::string, std::string>> getActivities() {return activities_;};
-  std::vector<std::pair<std::string, std::string>> getEnums() {return enums_;};
-  std::vector<std::string> getFrames() {return frames_;};
-
 private:
 
-  std::string frameName_;
+  Logger* logger_;
+  std::vector<std::string> defClasses_;
+  std::vector<std::string> usedСlasses_;
 
-  CompilerLogger logger_;
-  std::vector<std::pair<std::string, std::string>> classes_;
-  std::vector<std::pair<std::string, std::string>> activities_;
-  std::vector<std::pair<std::string, std::string>> enums_;
-  std::vector<std::string> frames_;
+  std::vector<std::string> defActivities_;
+  std::vector<std::string> usedActivities_;
+
+  std::vector<std::string> currUsedObjs_;
+
+  bool isUsed(const std::string& str) const;
+
+  QJsonArray createUsedArr(std::vector<std::string> used, std::vector<std::string> def) const;
+
+  void redefCheck() const;
+
+  std::vector<std::string> getNames(std::vector<antlr4::tree::TerminalNode*> arr);
+  std::vector<std::string> getStrs(std::vector<antlr4::tree::TerminalNode*> arr);
+  std::string getName(antlr4::tree::TerminalNode* node);
 
   virtual antlrcpp::Any visitFile(ontologyParser::FileContext *ctx) override;
 
-  virtual antlrcpp::Any visitFrame(ontologyParser::FrameContext *ctx) override;
+  virtual antlrcpp::Any visitPackage(ontologyParser::PackageContext *ctx) override;
 
   virtual antlrcpp::Any visitClass_(ontologyParser::Class_Context *ctx) override;
 

@@ -1,8 +1,5 @@
 #include "projectmanager.h"
 
-
-
-
 ProjectManager::ProjectManager(){}
 
 void ProjectManager::loadProject(QString const& projFilePath)
@@ -11,8 +8,7 @@ void ProjectManager::loadProject(QString const& projFilePath)
     if (!m_projFile.exists())
         return;
 
-    delete m_compiler; // some shit
-    m_compiler = new ProjectCompiler(QFileInfo(projFilePath).path());
+    m_compiler.setProjPath(QFileInfo(projFilePath).path());
 }
 
 QStandardItemModel* ProjectManager::getProjModel(QMainWindow *mainWindow)
@@ -51,7 +47,7 @@ QStandardItemModel* ProjectManager::getProjModel(QMainWindow *mainWindow)
 }
 
 void ProjectManager::recompileProject() {
-    m_compiler->compile();
+    m_compiler.compile();
 }
 
 QJsonDocument ProjectManager::loadFile()
