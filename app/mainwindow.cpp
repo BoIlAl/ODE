@@ -4,6 +4,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     ui->treeView->setHeaderHidden(true);
 
+    m_grapManager.setupGView(ui->graphicsView);
+
     QObject::connect(ui->compileButton, &QPushButton::released, this, &MainWindow::s_compileButton);
 
     createActions();
@@ -51,6 +53,7 @@ void MainWindow::s_openProj()
     m_projManager.loadProject(projFIleName);
     auto treeModel = m_projManager.getProjModel(this);
     ui->treeView->setModel(treeModel);
+    QObject::connect(ui->treeView, &QTreeView::doubleClicked, this, &MainWindow::s_addItem);
 }
 
 void MainWindow::s_newProj()
@@ -80,4 +83,11 @@ void MainWindow::s_compileButton()
 void MainWindow::loadProject(QString const& projPath)
 {
 
+}
+
+void MainWindow::s_addItem(QModelIndex index)
+{
+    auto model = ui->treeView->model();
+    auto data = m_projManager.getGInfo(model, index);
+    m_grapManager.addObj(data);
 }

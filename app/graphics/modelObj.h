@@ -16,13 +16,13 @@ enum RelType {
     RT_NONE
 };
 
-class AbsModelObj : QGraphicsRectItem {
+class AbsModelObj : public QGraphicsRectItem {
 private:
     QString name_;
 protected:
-    AbsModelObj(const QString& name);
+    explicit AbsModelObj(const QString& name);
 public:
-    static AbsModelObj* createFromJson(const QJsonObject&);
+    static AbsModelObj *createFromJson(const QJsonObject &);
 
     QString getName() const;
 

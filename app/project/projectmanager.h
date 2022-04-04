@@ -8,20 +8,24 @@
 #include <QJsonArray>
 
 #include <QStandardItemModel>
+#include <QAbstractItemModel>
 
 #include "projectCompiler.h"
 
-class ProjectManager
+class ProjectManager : public QObject
 {
+    Q_OBJECT
 public:
 
     ProjectManager();
 
     void loadProject(QString const& projFilePath);
 
-    void createProject(QString const &projPath, const QString &projName);
+    void createProject(QString const &projPath, QString const &projName);
 
     void recompileProject();
+
+    QJsonObject getGInfo(QAbstractItemModel *model, QModelIndex const& index);
 
     QStandardItemModel* getProjModel(QMainWindow *mainWindow);
 
@@ -32,4 +36,5 @@ private:
     ProjectCompiler m_compiler;
 
     QFile m_projFile;
+
 };

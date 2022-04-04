@@ -39,6 +39,7 @@ QStandardItemModel* ProjectManager::getProjModel(QMainWindow *mainWindow)
                 continue;
             
             nextItem->appendRow(new QStandardItem(name));
+            nextItem->setData(QVariant(value.toObject()["path"].toString()));
         }
         rootNode->appendRow(nextItem);
     }
@@ -60,7 +61,7 @@ QJsonDocument ProjectManager::loadFile()
     return projDoc;
 }
 
-void ProjectManager::createProject(QString const &projPath, const QString &projName)
+void ProjectManager::createProject(QString const &projPath,  QString const &projName)
 {
     QDir rootDir(projPath);
     rootDir.mkdir(projName);
@@ -74,4 +75,10 @@ void ProjectManager::createProject(QString const &projPath, const QString &projN
     m_projFile.close();
 
     loadProject(projFileName);
+}
+
+QJsonObject ProjectManager::getGInfo(QAbstractItemModel *model, QModelIndex const& index)
+{
+    // qobject_cast<QStandartItemModel*>(model)->itemFromIndex(index)
+    return QJsonObject({{"name", "ksefjslkfjse"}});
 }

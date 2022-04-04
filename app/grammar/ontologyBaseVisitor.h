@@ -17,7 +17,7 @@ private:
 
   Logger* logger_;
   std::vector<std::string> defClasses_;
-  std::vector<std::string> usedСlasses_;
+  std::vector<std::string> usedClasses_;
 
   std::vector<std::string> defActivities_;
   std::vector<std::string> usedActivities_;

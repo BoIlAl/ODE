@@ -57,9 +57,9 @@ QJsonObject ontologyBaseVisitor::getJson(ontologyParser::FileContext *ctx) {
 
   redefCheck();
 
-  QJsonArray usedСlassesArr = createUsedArr(usedСlasses_, defClasses_);
-  if (usedСlassesArr.size() > 0) {
-    json.insert("Used Сlasses", usedСlassesArr);
+  QJsonArray usedClassesArr = createUsedArr(usedClasses_, defClasses_);
+  if (usedClassesArr.size() > 0) {
+    json.insert("Used Сlasses", usedClassesArr);
   }
 
   QJsonArray usedActivitiesArr = createUsedArr(usedActivities_, defActivities_);
@@ -68,7 +68,7 @@ QJsonObject ontologyBaseVisitor::getJson(ontologyParser::FileContext *ctx) {
   }
 
   defClasses_.clear();
-  usedСlasses_.clear();
+  usedClasses_.clear();
 
   defActivities_.clear();
   usedActivities_.clear();
@@ -85,7 +85,7 @@ antlrcpp::Any ontologyBaseVisitor::visitPackage(ontologyParser::PackageContext *
 
     std::function<antlrcpp::Any(antlr4::ParserRuleContext)> visitFunc;
 
-    currUsedObjs_ = usedСlasses_;
+    currUsedObjs_ = usedClasses_;
     if (!ctx->class_().empty()) {
       QJsonArray classes;
       auto arrClass = ctx->class_();
@@ -103,7 +103,7 @@ antlrcpp::Any ontologyBaseVisitor::visitPackage(ontologyParser::PackageContext *
       }
       package.insert("Association", assoc);
     }
-    usedСlasses_ = currUsedObjs_;
+    usedClasses_ = currUsedObjs_;
 
     currUsedObjs_ = usedActivities_;
     if (!ctx->act().empty()) {
@@ -203,7 +203,7 @@ antlrcpp::Any ontologyBaseVisitor::visitAct(ontologyParser::ActContext *ctx) {
 
     QJsonArray in;
     std::vector<std::string> arrIN = visitIn(ctx->in()).as<std::vector<std::string>>();
-    currUsedObjs_ = usedСlasses_;
+    currUsedObjs_ = usedClasses_;
     for (int i = 0; i < arrIN.size(); ++i) {
       in.push_back(arrIN[i].c_str());
     }
@@ -215,7 +215,7 @@ antlrcpp::Any ontologyBaseVisitor::visitAct(ontologyParser::ActContext *ctx) {
       out.push_back(arrOut[i].c_str());
     }
     act.insert("out", out);
-    usedСlasses_ = currUsedObjs_;
+    usedClasses_ = currUsedObjs_;
 
     currUsedObjs_ = usedActivities_;
     if (ctx->aggr() != nullptr) {

@@ -9,6 +9,7 @@
 
 #include "ui_mainwindow.h"
 #include "project/projectmanager.h"
+#include "graphics/graphicsManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,8 +41,9 @@ private:
     QAction* openProjAct;
     QAction* newProjAct;
 
-    /* project maneger */
+    /* managers */
     ProjectManager m_projManager;
+    GraphicsManager m_grapManager;
 
 private Q_SLOTS:
 
@@ -52,4 +54,6 @@ private Q_SLOTS:
     void s_newProj();
 
     void s_compileButton();
+
+    void s_addItem(QModelIndex);
 };

@@ -7,10 +7,13 @@
 
 class GraphicsManager {
 private:
-    std::vector<AbsModelObj*> elems_;
-public:
-    GraphicsManager(QGraphicsView* view);
+    QVector<AbsModelObj*> elems_;
 
-    void addObj(const QJsonObject& name);
+    QGraphicsScene* scene_;
+public:
+    GraphicsManager();
+
+    void setupGView(QGraphicsView* gView);
+    void addObj(const QJsonObject& data);
     void redraw() const;
 };
