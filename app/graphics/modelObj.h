@@ -21,7 +21,7 @@ enum RelType {
 class AbsModelObj : public QGraphicsRectItem {
 protected:
     QString name_;
-    QGraphicsTextItem* text;
+    QGraphicsTextItem* text_;
 
 public:
     static AbsModelObj *createFromJson(const QJsonObject&);
@@ -32,4 +32,7 @@ public:
 
     bool move(QGraphicsSceneMouseEvent* event);
 
+    void setText();
+
+    ~AbsModelObj();
 };

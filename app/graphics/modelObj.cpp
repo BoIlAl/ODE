@@ -69,9 +69,8 @@ ClassModelObj* ClassModelObj::parseClass(const QJsonObject & obj) {
         } 
     }
 
-    auto text = new QGraphicsTextItem(newModelObj->name_, newModelObj);
-    newModelObj->setRect(text->boundingRect());
-    newModelObj->setPos(0, 0);
+    newModelObj->setText();
+
     return newModelObj;
 }
 
@@ -109,9 +108,8 @@ ActivityModelObj* ActivityModelObj::parseActivity(const QJsonObject & obj) {
         } 
     }
 
-    QGraphicsTextItem text(newModelObj->name_, newModelObj);
+    newModelObj->setText();
 
-    newModelObj->setRect(-200, -240, 100, 100);
     return newModelObj;
 }
 EnumModelObj* EnumModelObj::parseEnum(const QJsonObject & obj) {
@@ -119,9 +117,8 @@ EnumModelObj* EnumModelObj::parseEnum(const QJsonObject & obj) {
 
     newModelObj->name_ = obj["name"].toString();
 
-    QGraphicsTextItem text(newModelObj->name_, newModelObj);
-
-    newModelObj->setRect(-200, -240, 100, 100);
+    newModelObj->setText();
+    
     return newModelObj;
 }
 
@@ -131,6 +128,10 @@ RelType ClassModelObj::getRelType(const QString& name) const {
             return relations_[i].second;
         }
     }
+    return RT_NONE;
+}
+
+RelType EnumModelObj::getRelType(const QString& name) const {
     return RT_NONE;
 }
 
@@ -144,9 +145,6 @@ RelType ActivityModelObj::getRelType(const QString& name) const {
 }
 
 
-RelType EnumModelObj::getRelType(const QString& name) const {
-    return RT_NONE;
-}
 
 AbsModelObj *AbsModelObj::createFromJson(const QJsonObject & obj)
 {
@@ -174,4 +172,16 @@ bool AbsModelObj::move(QGraphicsSceneMouseEvent *event)
         return true;
     }
     return false;
+}
+
+void AbsModelObj::setText()
+{
+    text_ = new QGraphicsTextItem(name_, this);
+    setRect(text_->boundingRect());
+    setPos(0, 0);
+}
+
+AbsModelObj::~AbsModelObj()
+{
+    delete text_;
 }
