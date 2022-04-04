@@ -5,15 +5,18 @@
 #include <QGraphicsView>
 #include "modelObj.h"
 
-class GraphicsManager {
+class GraphicsManager : public QGraphicsScene {
 private:
-    QVector<AbsModelObj*> elems_;
+    //QVector<AbsModelObj*> elems_;
 
-    QGraphicsScene* scene_;
+    //QGraphicsScene* scene_;
 public:
     GraphicsManager();
 
-    void setupGView(QGraphicsView* gView);
+    //void setupGView(QGraphicsView* gView);
     void addObj(const QJsonObject& data);
     void redraw() const;
+
+protected:
+    //void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 };

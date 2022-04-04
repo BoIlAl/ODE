@@ -1,10 +1,10 @@
 #include "graphicsManager.h"
 
-GraphicsManager::GraphicsManager() : scene_(new QGraphicsScene) {
+GraphicsManager::GraphicsManager(){
 
 }
 
-void GraphicsManager::setupGView(QGraphicsView *gView)
+/*void GraphicsManager::setupGView(QGraphicsView *gView)
 {
     gView->setScene(scene_);
     scene_->setSceneRect(gView->rect());
@@ -12,14 +12,24 @@ void GraphicsManager::setupGView(QGraphicsView *gView)
     gView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     gView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     */
-}
+//}
 
 void GraphicsManager::addObj(const QJsonObject &data) {
     auto newItem = AbsModelObj::createFromJson(data);
-    scene_->addItem(newItem);
-    scene_->update();
+    addItem(newItem);
+    update();
 }
 
 void GraphicsManager::redraw() const {
 
 }
+
+/*void GraphicsManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsScene::mouseMoveEvent(event);
+
+    if (event->buttons() & Qt::LeftButton) {
+        //itemAt(event->lastScenePos(), QTransform())->setPos(event->scenePos());
+        update();
+    }
+}*/

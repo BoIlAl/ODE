@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QGraphicsSceneMouseEvent>
 
 enum RelType {
     RT_GENERALIZATION,
@@ -20,10 +21,16 @@ enum RelType {
 class AbsModelObj : public QGraphicsRectItem {
 protected:
     QString name_;
+    QGraphicsTextItem* text;
+
 public:
     static AbsModelObj *createFromJson(const QJsonObject&);
 
     QString getName() const;
 
     virtual RelType getRelType(const QString& name) const = 0;
+
+protected:
+
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 };

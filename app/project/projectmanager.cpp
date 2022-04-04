@@ -1,4 +1,5 @@
 #include "projectmanager.h"
+#include <iostream>
 
 ProjectManager::ProjectManager(){}
 
@@ -44,9 +45,12 @@ QStandardItemModel* ProjectManager::getProjModel(QMainWindow* mainWindow)
             else
                 continue;
 
-            nextItem->appendRow(new QStandardItem(name));
-            if (value.toObject().contains("package"))
-                nextItem->setData(QVariant(getPath(value.toObject()["package"].toString())));
+            auto subItem = new QStandardItem(name);
+            nextItem->appendRow(subItem);
+            if (value.toObject().contains("package")) {
+                auto s = getPath(value.toObject()["package"].toString());
+                subItem->setData(QVariant(s));
+            }
         }
         rootNode->appendRow(nextItem);
     }
@@ -87,10 +91,10 @@ void ProjectManager::createProject(QString const &projPath,  QString const &proj
 QJsonObject ProjectManager::getGInfo(QAbstractItemModel *model, QModelIndex const& index)
 {
     QStandardItem* item = qobject_cast<QStandardItemModel*>(model)->itemFromIndex(index);
-    
 
-    QString filePath = QFileInfo(m_projFile).absoluteFilePath() + "/" + item->data().toString();
-
+    QString filePath = QFileInfo(m_projFile).absolutePath() + "/.gldata/" + item->data().toString();
+    auto s = filePath.toStdString();
+    std::cout << s << std::endl;
     QFile file(filePath);
 
     QJsonObject obj;

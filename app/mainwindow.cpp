@@ -4,7 +4,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     ui->treeView->setHeaderHidden(true);
 
-    m_grapManager.setupGView(ui->graphicsView);
+    ui->graphicsView->setScene(&m_grapManager);
+    m_grapManager.setSceneRect(ui->graphicsView->rect());
 
     QObject::connect(ui->compileButton, &QPushButton::released, this, &MainWindow::s_compileButton);
 

@@ -11,6 +11,9 @@ public:
     static ClassModelObj* parseClass(const QJsonObject & obj);
  
     RelType getRelType(const QString& name) const override;
+
+protected:
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 class ActivityModelObj : public AbsModelObj {
@@ -21,6 +24,7 @@ public:
     static ActivityModelObj* parseActivity(const QJsonObject & obj);
 
     RelType getRelType(const QString& name) const override;
+
 };
 
 class EnumModelObj : public AbsModelObj {
@@ -67,9 +71,10 @@ ClassModelObj* ClassModelObj::parseClass(const QJsonObject & obj) {
         } 
     }
 
-    QGraphicsTextItem text(newModelObj->name_, newModelObj);
-
-    newModelObj->setRect(-200, -240, 100, 100);
+    //auto text = new QGraphicsTextItem(newModelObj->name_, newModelObj);
+    //newModelObj->setRect(text->boundingRect());
+    newModelObj->setRect(-200, -240, 200, 200);
+    newModelObj->setPos(-200, -240);
     return newModelObj;
 }
 
@@ -141,6 +146,7 @@ RelType ActivityModelObj::getRelType(const QString& name) const {
     return RT_NONE;
 }
 
+
 RelType EnumModelObj::getRelType(const QString& name) const {
     return RT_NONE;
 }
@@ -160,4 +166,16 @@ AbsModelObj *AbsModelObj::createFromJson(const QJsonObject & obj)
         ///////////////
         return nullptr;
     }
+}
+
+void AbsModelObj::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton)
+        setPos(event->scenePos());
+}
+
+void ClassModelObj::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton)
+        setPos(event->scenePos());
+    AbsModelObj::mouseMoveEvent(event);
 }
