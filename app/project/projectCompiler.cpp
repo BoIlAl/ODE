@@ -28,12 +28,12 @@ void ProjectCompiler::nodefCheck(std::vector<std::pair<QString, int>> names, std
     }
 }
 
-QJsonArray ProjectCompiler::getObjArr(std::vector<std::pair<QString, int>> info, std::vector<QString> packages) const {
+QJsonArray ProjectCompiler::getObjArr(std::vector<std::pair<QString, int>> info, std::vector<std::pair<QString, QString>> packages) const {
     QJsonArray arr;
     for(int i = 0; i < info.size(); ++i) {
         QJsonObject obj;
         obj.insert("name",  info[i].first);
-        obj.insert("package",  packages[info[i].second]);
+        obj.insert("package",  packages[info[i].second].first);
         arr.push_back(obj);
     }
     return arr;
@@ -50,7 +50,7 @@ void ProjectCompiler::createMainJson() {
     std::vector<QString> usedClassNames;
     std::vector<QString> usedActivityNames;
 
-    std::vector<QString> packageNames;
+    std::vector<std::pair<QString, QString>> packageNames;
     int index = 0;
 
     if (fileInfos.size() == 0) {
@@ -73,7 +73,7 @@ void ProjectCompiler::createMainJson() {
 
         QJsonObject packageObj = doc.object();
 
-        packageNames.push_back(packageObj["name"].toString());
+        packageNames.push_back({packageObj["name"].toString(), fileInfos[i].fileName()});
 
         QJsonArray classArray = packageObj["Class"].toArray();
         for (int j = 0; j < classArray.size(); ++j) {
@@ -113,7 +113,8 @@ void ProjectCompiler::createMainJson() {
         QJsonArray pArr;
         for(int i = 0; i < packageNames.size(); ++i) {
             QJsonObject obj;
-            obj.insert("name",  packageNames[i]);
+            obj.insert("name",  packageNames[i].first);
+            obj.insert("filename",  packageNames[i].second);
             pArr.push_back(obj);
         }
         mainJson.insert("Packages", pArr);

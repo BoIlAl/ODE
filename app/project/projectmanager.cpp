@@ -11,35 +11,42 @@ void ProjectManager::loadProject(QString const& projFilePath)
     m_compiler.setProjPath(QFileInfo(projFilePath).path());
 }
 
-QStandardItemModel* ProjectManager::getProjModel(QMainWindow *mainWindow)
+QStandardItemModel* ProjectManager::getProjModel(QMainWindow* mainWindow)
 {
     auto treeModel = new QStandardItemModel(mainWindow);
     auto projDoc = loadFile();
 
     if (!projDoc.isObject())
         return treeModel;
-    
+
     QJsonObject mainObj = projDoc.object();
 
     QStandardItem* rootNode = treeModel->invisibleRootItem();
+
+    auto packages = mainObj["Packages"];
+    auto getPath = [&](QString const& name){
+        for (auto pObj : packages.toArray())
+            if (pObj.toObject()["name"].toString() == name)
+                return pObj.toObject()["filename"].toString();
+        return tr("");
+    };
 
     for (auto key : mainObj.keys()){
         if (!mainObj[key].isArray())
             continue;
         QJsonArray values = mainObj[key].toArray();
         QStandardItem* nextItem = new QStandardItem(key);
+
         for (auto value : values){
             QString name;
-            
-            if (value.isString())
-                name = value.toString();
-            else if (value.isObject() && value.toObject().contains("name"))
+            if (value.isObject() && value.toObject().contains("name"))
                 name = value.toObject()["name"].toString();
             else
                 continue;
-            
+
             nextItem->appendRow(new QStandardItem(name));
-            nextItem->setData(QVariant(value.toObject()["path"].toString()));
+            if (value.toObject().contains("package"))
+                nextItem->setData(QVariant(getPath(value.toObject()["package"].toString())));
         }
         rootNode->appendRow(nextItem);
     }
@@ -79,6 +86,46 @@ void ProjectManager::createProject(QString const &projPath,  QString const &proj
 
 QJsonObject ProjectManager::getGInfo(QAbstractItemModel *model, QModelIndex const& index)
 {
-    // qobject_cast<QStandartItemModel*>(model)->itemFromIndex(index)
-    return QJsonObject({{"name", "ksefjslkfjse"}});
+    QStandardItem* item = qobject_cast<QStandardItemModel*>(model)->itemFromIndex(index);
+    
+
+    QString filePath = QFileInfo(m_projFile).absoluteFilePath() + "/" + item->data().toString();
+
+    QFile file(filePath);
+
+    QJsonObject obj;
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        //////////////////////
+        return obj;
+    }
+
+    QString file_text = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(file_text.toUtf8());
+    QJsonObject packageObj = doc.object();
+
+    for(auto key: packageObj.keys()) {
+        if (key == "name") {
+            continue;
+        }
+        if (key == "Association") {
+            continue;
+        }
+        QJsonArray jsonArr = packageObj[key].toArray();
+        for (int j = 0; j < jsonArr.size(); ++j) {
+            if (jsonArr[j].toObject()["name"].toString() == item->text()) {
+                obj = jsonArr[j].toObject();
+                obj.insert("type", key);
+                std::cout << key.toStdString() << endl;
+                return obj;
+            }
+        }
+    }
+
+
+    /////////////
+
+    return obj;
 }

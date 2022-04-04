@@ -8,7 +8,6 @@
 #include <QJsonArray>
 
 #include <QStandardItemModel>
-#include <QAbstractItemModel>
 
 #include "projectCompiler.h"
 

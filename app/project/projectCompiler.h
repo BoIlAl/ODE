@@ -27,7 +27,7 @@ private:
 
     void redefCheck(std::vector<std::pair<QString, int>> names);
     void nodefCheck(std::vector<std::pair<QString, int>> names, std::vector<QString> uNames);
-    QJsonArray getObjArr(std::vector<std::pair<QString, int>> info, std::vector<QString> packages) const;
+    QJsonArray getObjArr(std::vector<std::pair<QString, int>> info, std::vector<std::pair<QString, QString>> packages) const;
 public:
     void setProjPath(const QString& projectPath);
 
