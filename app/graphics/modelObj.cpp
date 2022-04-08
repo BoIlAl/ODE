@@ -1,5 +1,4 @@
 #include "modelObj.h"
-#include <stdlib.h>
 
 class ClassModelObj : public AbsModelObj {
 private:
@@ -136,10 +135,9 @@ RelType EnumModelObj::getRelType(const QString& name) const {
 }
 
 RelType ActivityModelObj::getRelType(const QString& name) const {
-    for (int i = 0; i < relations_.size(); ++i) {
-        if (relations_[i].first == name) {
-            return relations_[i].second;
-        }
+    for (auto const& relation : relations_){
+        if (relation.first == name)
+            return relation.second;
     }
     return RT_NONE;
 }
