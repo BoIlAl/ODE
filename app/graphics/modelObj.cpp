@@ -37,6 +37,8 @@ public:
 ClassModelObj* ClassModelObj::parseClass(const QJsonObject & obj) {
     ClassModelObj* newModelObj = new ClassModelObj();
 
+    newModelObj->setBrush(QColor(224, 207, 177));
+
     newModelObj->name_ = obj["name"].toString();
 
     for(auto key: obj.keys()) {
@@ -75,6 +77,8 @@ ClassModelObj* ClassModelObj::parseClass(const QJsonObject & obj) {
 
 ActivityModelObj* ActivityModelObj::parseActivity(const QJsonObject & obj) {
     ActivityModelObj* newModelObj = new ActivityModelObj();
+
+    newModelObj->setBrush(QColor(152, 255, 152));
 
     newModelObj->name_ = obj["name"].toString();
 

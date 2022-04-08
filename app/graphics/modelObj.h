@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QBrush>
 #include <QGraphicsSceneMouseEvent>
 
 enum RelType {

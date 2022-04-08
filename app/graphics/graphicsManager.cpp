@@ -6,9 +6,17 @@ void GraphicsManager::addArrows(AbsModelObj* obj) {
         if (obj->getRelType(elems_[i]->getName()) == RT_NONE && elems_[i]->getRelType(obj->getName()) == RT_NONE) {
             continue;
         } else if (obj->getRelType(elems_[i]->getName()) != RT_NONE) {
-            newArrow = new Arrow(obj, elems_[i]); 
+            if (obj->getRelType(elems_[i]->getName()) == RT_ACT_OUT || obj->getRelType(elems_[i]->getName()) == RT_GENERALIZATION) {
+                newArrow = new Arrow(obj, elems_[i]); 
+            } else {
+                newArrow = new Arrow(elems_[i], obj); 
+            }
         } else {
-            newArrow = new Arrow(elems_[i], obj);
+            if (elems_[i]->getRelType(obj->getName()) == RT_ACT_OUT || elems_[i]->getRelType(obj->getName()) == RT_GENERALIZATION) {
+                newArrow = new Arrow(elems_[i], obj);
+            } else {
+                newArrow = new Arrow(obj, elems_[i]);
+            }
         }
         newArrow->paint(this);
         arrows_.append(newArrow);
