@@ -4,19 +4,22 @@
 #include <vector>
 #include <QGraphicsView>
 #include "modelObj.h"
+#include "arrow.h"
 
 class GraphicsManager : public QGraphicsScene {
 private:
     QVector<AbsModelObj*> elems_;
 
-    //QGraphicsScene* scene_;
+    QVector<Arrow*> arrows_;
+
+    void addArrows(AbsModelObj* obj);
+    void updateArrows();
+
 public:
-    GraphicsManager();
 
-    //void setupGView(QGraphicsView* gView);
     void addObj(const QJsonObject& data);
-    void redraw() const;
 
+    ~GraphicsManager();
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 };

@@ -43,17 +43,17 @@ ClassModelObj* ClassModelObj::parseClass(const QJsonObject & obj) {
     for(auto key: obj.keys()) {
         if (key == "attributes") {
             QJsonArray jsonArr = obj[key].toArray();
-            for (int i; i < jsonArr.size(); ++i) {
+            for (int i = 0; i < jsonArr.size(); ++i) {
                 newModelObj->attributes_.append(jsonArr[i].toString());
             }
         } else if (key == "operations") {
             QJsonArray jsonArr = obj[key].toArray();
-            for (int i; i < jsonArr.size(); ++i) {
+            for (int i = 0; i < jsonArr.size(); ++i) {
                 newModelObj->operations_.append(jsonArr[i].toString());
             }
         } else if (key == "generalization") {
             QJsonArray jsonArr = obj[key].toArray();
-            for (int i; i < jsonArr.size(); ++i) {
+            for (int i = 0 ; i < jsonArr.size(); ++i) {
                 newModelObj->relations_.append({jsonArr[i].toString(), RT_GENERALIZATION});
             }
         } else if (key == "composition") {
@@ -80,19 +80,19 @@ ActivityModelObj* ActivityModelObj::parseActivity(const QJsonObject & obj) {
     newModelObj->name_ = obj["name"].toString();
 
     for(auto key: obj.keys()) {
-        if (key == "in") {
+        if (key == "input") {
             QJsonArray jsonArr = obj[key].toArray();
-            for (int i; i < jsonArr.size(); ++i) {
+            for (int i = 0; i < jsonArr.size(); ++i) {
                 newModelObj->relations_.append({jsonArr[i].toString(), RT_ACT_IN});
             }
-        } else if (key == "out") {
+        } else if (key == "output") {
             QJsonArray jsonArr = obj[key].toArray();
-            for (int i; i < jsonArr.size(); ++i) {
+            for (int i = 0; i < jsonArr.size(); ++i) {
                 newModelObj->relations_.append({jsonArr[i].toString(), RT_ACT_OUT});
             }
         } else if (key == "generalization") {
             QJsonArray jsonArr = obj[key].toArray();
-            for (int i; i < jsonArr.size(); ++i) {
+            for (int i = 0; i < jsonArr.size(); ++i) {
                 newModelObj->relations_.append({jsonArr[i].toString(), RT_GENERALIZATION});
             }
         } else if (key == "composition") {
@@ -123,7 +123,7 @@ EnumModelObj* EnumModelObj::parseEnum(const QJsonObject & obj) {
 }
 
 RelType ClassModelObj::getRelType(const QString& name) const {
-    for (int i; i < relations_.size(); ++i) {
+    for (int i = 0; i < relations_.size(); ++i) {
         if (relations_[i].first == name) {
             return relations_[i].second;
         }
@@ -136,15 +136,13 @@ RelType EnumModelObj::getRelType(const QString& name) const {
 }
 
 RelType ActivityModelObj::getRelType(const QString& name) const {
-    for (int i; i < relations_.size(); ++i) {
+    for (int i = 0; i < relations_.size(); ++i) {
         if (relations_[i].first == name) {
             return relations_[i].second;
         }
     }
     return RT_NONE;
 }
-
-
 
 AbsModelObj *AbsModelObj::createFromJson(const QJsonObject & obj)
 {
@@ -172,6 +170,10 @@ bool AbsModelObj::move(QGraphicsSceneMouseEvent *event)
         return true;
     }
     return false;
+}
+
+QString AbsModelObj::getName() const {
+    return name_;
 }
 
 void AbsModelObj::setText()

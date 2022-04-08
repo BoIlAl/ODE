@@ -149,7 +149,7 @@ antlrcpp::Any ontologyBaseVisitor::visitClass_(ontologyParser::Class_Context *ct
       for (int i = 0; i < arrAttr.size(); ++i) {
         attr.push_back(arrAttr[i].c_str());
       }
-      class_.insert("attr", attr);
+      class_.insert("attributes", attr);
     }
 
     if (ctx->oper() != nullptr) {
@@ -158,27 +158,27 @@ antlrcpp::Any ontologyBaseVisitor::visitClass_(ontologyParser::Class_Context *ct
       for (int i = 0; i < arrOper.size(); ++i) {
         oper.push_back(arrOper[i].c_str());
       }
-      class_.insert("oper", oper);
+      class_.insert("operations", oper);
     }
 
     if (ctx->aggr() != nullptr) {
-      class_.insert("aggr", visitAggr(ctx->aggr()).as<std::string>().c_str());
+      class_.insert("aggregation", visitAggr(ctx->aggr()).as<std::string>().c_str());
     }
 
     if (ctx->comp() != nullptr) {
-      class_.insert("comp", visitComp(ctx->comp()).as<std::string>().c_str());
+      class_.insert("composition", visitComp(ctx->comp()).as<std::string>().c_str());
     }
 
     if (ctx->dep() != nullptr) {
-      class_.insert("dep", visitDep(ctx->dep()).as<std::string>().c_str());
+      class_.insert("dependency", visitDep(ctx->dep()).as<std::string>().c_str());
     }
 
     if (ctx->impl() != nullptr) {
-      class_.insert("impl", visitImpl(ctx->impl()).as<std::string>().c_str());
+      class_.insert("implementation", visitImpl(ctx->impl()).as<std::string>().c_str());
     }
 
     if (ctx->comm() != nullptr) {
-      class_.insert("comm", visitComm(ctx->comm()).as<std::string>().c_str());
+      class_.insert("comment", visitComm(ctx->comm()).as<std::string>().c_str());
     }
 
     std::string name = ctx->NAME()->getText();
@@ -207,35 +207,35 @@ antlrcpp::Any ontologyBaseVisitor::visitAct(ontologyParser::ActContext *ctx) {
     for (int i = 0; i < arrIN.size(); ++i) {
       in.push_back(arrIN[i].c_str());
     }
-    act.insert("in", in);
+    act.insert("input", in);
 
     QJsonArray out;
     std::vector<std::string> arrOut = visitOut(ctx->out()).as<std::vector<std::string>>();
     for (int i = 0; i < arrOut.size(); ++i) {
       out.push_back(arrOut[i].c_str());
     }
-    act.insert("out", out);
+    act.insert("output", out);
     usedClasses_ = currUsedObjs_;
 
     currUsedObjs_ = usedActivities_;
     if (ctx->aggr() != nullptr) {
-      act.insert("aggr", visitAggr(ctx->aggr()).as<std::string>().c_str());
+      act.insert("aggregation", visitAggr(ctx->aggr()).as<std::string>().c_str());
     }
 
     if (ctx->comp() != nullptr) {
-      act.insert("comp", visitComp(ctx->comp()).as<std::string>().c_str());
+      act.insert("composition", visitComp(ctx->comp()).as<std::string>().c_str());
     }
 
     if (ctx->dep() != nullptr) {
-      act.insert("dep", visitDep(ctx->dep()).as<std::string>().c_str());
+      act.insert("dependency", visitDep(ctx->dep()).as<std::string>().c_str());
     }
 
     if (ctx->impl() != nullptr) {
-      act.insert("impl", visitImpl(ctx->impl()).as<std::string>().c_str());
+      act.insert("implementation", visitImpl(ctx->impl()).as<std::string>().c_str());
     }
 
     if (ctx->comm() != nullptr) {
-      act.insert("comm", visitComm(ctx->comm()).as<std::string>().c_str());
+      act.insert("comment", visitComm(ctx->comm()).as<std::string>().c_str());
     }
 
     std::string name = ctx->NAME()->getText();
@@ -254,7 +254,7 @@ antlrcpp::Any ontologyBaseVisitor::visitEnum_(ontologyParser::Enum_Context *ctx)
     for (int i = 0; i < arr.size(); ++i) {
       literals.push_back(arr[i].c_str());
     }
-    enumeration.insert("enum_literals", literals);
+    enumeration.insert("literals", literals);
 
     std::string name = ctx->NAME()->getText();
     enumeration.insert("name", name.substr(1, name.size() - 2).c_str());

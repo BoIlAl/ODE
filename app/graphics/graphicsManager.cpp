@@ -1,39 +1,66 @@
 #include "graphicsManager.h"
 
-GraphicsManager::GraphicsManager(){
-
+void GraphicsManager::addArrows(AbsModelObj* obj) {
+    for(int i = 0; i < elems_.size(); ++i) {
+        Arrow* newArrow;
+        if (obj->getRelType(elems_[i]->getName()) == RT_NONE && elems_[i]->getRelType(obj->getName()) == RT_NONE) {
+            continue;
+        } else if (obj->getRelType(elems_[i]->getName()) != RT_NONE) {
+            newArrow = new Arrow(obj, elems_[i]); 
+        } else {
+            newArrow = new Arrow(elems_[i], obj);
+        }
+        newArrow->paint(this);
+        arrows_.append(newArrow);
+    }
 }
 
-/*void GraphicsManager::setupGView(QGraphicsView *gView)
-{
-    gView->setScene(scene_);
-    scene_->setSceneRect(gView->rect());
-    /*
-    gView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    gView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    */
-//}
 
 void GraphicsManager::addObj(const QJsonObject &data) {
     auto newItem = AbsModelObj::createFromJson(data);
+
+    for (int i = 0; i < elems_.size(); i++) {
+        if (newItem->getName() == elems_[i]->getName()) {
+            delete newItem;
+            return;
+        }
+    }
+
     addItem(newItem);
+    addArrows(newItem);
     elems_.append(newItem);
     update();
 }
 
-void GraphicsManager::redraw() const {
-
+void GraphicsManager::updateArrows() {
+    for (int i = 0; i < arrows_.size(); ++i) {
+        arrows_[i]->paint(this);
+    }
 }
 
-void GraphicsManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-    QGraphicsScene::mouseMoveEvent(event);
-
+void GraphicsManager::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    
     if (event->buttons() & Qt::LeftButton) {
-        //itemAt(event->lastScenePos(), QTransform())->setPos(event->scenePos());
-        for (auto elem : elems_)
-            if(elem->move(event))
+        for (int i = 0; i < elems_.size(); i++) {
+            if(elems_[i]->move(event)) {
+                if (i != 0) {
+                    auto ptr = elems_[i];
+                    elems_.remove(i);
+                    elems_.push_front(ptr);
+                }
                 break;
+            }
+        }
+        updateArrows();
         update();
+    }
+}
+
+GraphicsManager::~GraphicsManager(){
+    for(int i = 0; i < elems_.size(); ++i) {
+        delete elems_[i];
+    }
+    for(int i = 0; i < elems_.size(); ++i) {
+        delete arrows_[i];
     }
 }
